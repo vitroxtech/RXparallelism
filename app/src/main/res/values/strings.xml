@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">RXparallel</string>
+    <string name="creation_date">Creation Date:</string>
+    <string name="nRepos_Label">Total repositories:</string>
+</resources>
