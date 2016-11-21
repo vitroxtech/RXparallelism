@@ -41,6 +41,7 @@ public class MainActivity extends BaseActivity {
     TextView repo2Name;
     TextView duration1;
     TextView duration2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,7 +84,7 @@ public class MainActivity extends BaseActivity {
         String id2 = users.get(getRandomIntInRange(0, users.size() - 1)).getLogin();
         final Map<String,String> mymap= new HashMap<>();
 
-        Observable<GithubFullResponse> myresponse = mockClient(id1, id2).flatMap
+        Observable<GithubFullResponse> myresponse = baseObservable(id1, id2).flatMap
                 (new Func1<String, Observable<GithubFullResponse>>() {
                     @Override
                     public Observable<GithubFullResponse> call(final String t) {
@@ -135,10 +136,9 @@ public class MainActivity extends BaseActivity {
             }
         }).toBlocking().single();
         OrderAndSetupView(allTiles,mymap);
-
     }
 
-    private <T> Observable<T> mockClient(final T... ts) {
+    private <T> Observable<T> baseObservable(final T... ts) {
         return Observable.create(new Observable.OnSubscribe<T>() {
 
             @Override
