@@ -82,7 +82,7 @@ public class MainActivity extends BaseActivity {
         final long startTime = System.currentTimeMillis();
         String id1 = users.get(getRandomIntInRange(0, users.size() - 1)).getLogin();
         String id2 = users.get(getRandomIntInRange(0, users.size() - 1)).getLogin();
-        final Map<String,String> mymap= new HashMap<>();
+        final Map<String,String> TimingMap= new HashMap<>();
 
         Observable<GithubFullResponse> myresponse = baseObservable(id1, id2).flatMap
                 (new Func1<String, Observable<GithubFullResponse>>() {
@@ -123,19 +123,19 @@ public class MainActivity extends BaseActivity {
                         }).doOnCompleted(new Action0() {
                             @Override
                             public void call() {
-                                mymap.put(t,String.valueOf(System.currentTimeMillis() - startTime));
+                                TimingMap.put(t,String.valueOf(System.currentTimeMillis() - startTime));
                                 logTime("zip[" + t + "] completed ", startTime);
                             }
                         });
                     }
                 });
-        List<GithubFullResponse> allTiles = myresponse.toList().doOnCompleted(new Action0() {
+        List<GithubFullResponse> allInfo = myresponse.toList().doOnCompleted(new Action0() {
             @Override
             public void call() {
-                logTime("All Tiles Completed ", startTime);
+                logTime("All Completed ", startTime);
             }
         }).toBlocking().single();
-        OrderAndSetupView(allTiles,mymap);
+        OrderAndSetupView(allInfo,TimingMap);
     }
 
     private <T> Observable<T> baseObservable(final T... ts) {
@@ -150,21 +150,6 @@ public class MainActivity extends BaseActivity {
             }
         }).subscribeOn(Schedulers.io());
         // the use of subscribeOn to make an otherwise synchronous Observable async
-    }
-
-    private static void logTime(String message, long startTime) {
-        System.out.println(message + " => " + (System.currentTimeMillis() - startTime) + "ms");
-    }
-
-    public int getRandomIntInRange(int min, int max) {
-        Random mRandom = new Random();
-        int solve = mRandom.nextInt((max - min) + min) + min;
-        System.out.println("random: " + solve);
-        return solve;
-    }
-
-    private void SendErrorMessage(final String txt) {
-        Snackbar.make(findViewById(android.R.id.content), txt, Snackbar.LENGTH_LONG).show();
     }
 
     public void OrderAndSetupView(List<GithubFullResponse> dataObjList, Map<String,String> durations)
@@ -202,5 +187,19 @@ public class MainActivity extends BaseActivity {
         comparatorLayout.setVisibility(View.VISIBLE);
     }
 
+    private static void logTime(String message, long startTime) {
+        System.out.println(message + " => " + (System.currentTimeMillis() - startTime) + "ms");
+    }
+
+    public int getRandomIntInRange(int min, int max) {
+        Random mRandom = new Random();
+        int solve = mRandom.nextInt((max - min) + min) + min;
+        System.out.println("random: " + solve);
+        return solve;
+    }
+
+    private void SendErrorMessage(final String txt) {
+        Snackbar.make(findViewById(android.R.id.content), txt, Snackbar.LENGTH_LONG).show();
+    }
 
 }
